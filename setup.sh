@@ -1,6 +1,6 @@
 #!/bin/bash
 # =============================================================================
-# dev-conda-env — start the dev container for a given environment file and
+# dev-python-env — start the dev container for a given environment file and
 # install your SSH public key.
 #
 #   ./setup.sh envs/<chapter>.yml

@@ -1,5 +1,5 @@
 # =============================================================================
-# dev-conda-env — private dev container (SSH + one conda environment).
+# dev-python-env — private dev container (SSH + one conda environment).
 # Runtime image: miniforge3 base + a single conda env created from the yml
 # passed via ENV_FILE. sshd runs as root; SSH sessions log in as `dev`
 # (uid 1000 = your `id -u`), so files written in the mounted repo keep the

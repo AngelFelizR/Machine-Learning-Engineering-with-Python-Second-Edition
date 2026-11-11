@@ -1,4 +1,4 @@
-# dev-conda-env build context exclusions. `envs/` must NOT be excluded: the
+# dev-python-env build context exclusions. `envs/` must NOT be excluded: the
 # Dockerfile COPYs the chosen environment file from it.
 .git
 .github

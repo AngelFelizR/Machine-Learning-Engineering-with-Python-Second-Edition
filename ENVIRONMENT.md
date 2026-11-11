@@ -3,8 +3,8 @@
 Entornos **Conda (miniforge3)** aislados por capítulo, expuestos por **SSH**.
 Cada capítulo del libro tiene su propio `envs/chapterNN.yml` y su propia imagen,
 así las dependencias que chocan entre capítulos nunca conviven. Es una instancia
-del template [`dev-conda-env`](https://github.com/anomalyco/opencode) (repo
-hermano, `ToEdit_`).
+del template `dev-python-env` (repo hermano, `ToEdit_`), que además del backend
+conda soporta proyectos **uv**; este libro usa únicamente el backend conda.
 
 ## Prerequisitos
 

@@ -1,6 +1,6 @@
 #!/bin/bash
 # =============================================================================
-# dev-conda-env — build the dev image for a given environment file.
+# dev-python-env — build the dev image for a given environment file.
 #
 #   ./build.sh envs/<chapter>.yml
 #

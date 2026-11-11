@@ -121,6 +121,7 @@ celerybeat.pid
 
 # Environments
 .env
+kaggle.json
 .venv
 env/
 venv/
@@ -162,6 +163,9 @@ cython_debug/
 #Other - potentially vs code
 *.DS_Store
 */.DS_Store
+
+# Generated plots
+*.png
 
 
 #MLFlow etc

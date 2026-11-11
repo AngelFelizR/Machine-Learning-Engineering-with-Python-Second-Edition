@@ -1,11 +1,14 @@
 import logging
+
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
+
 plt.rcParams.update({'font.size': 22})
 import datetime
-from numpy.random import MT19937
-from numpy.random import RandomState, SeedSequence
+
+from numpy.random import MT19937, RandomState, SeedSequence
+
 rs = RandomState(MT19937(SeedSequence(123456789)))
 
 # Define simulate ride data function
@@ -13,10 +16,10 @@ def simulate_ride_distances():
     logging.info('Simulating ride distances ...')
     ride_dists = np.concatenate(
         (
-            10 * np.random.random(size=370),
-            30 * np.random.random(size=10),  # long distances
-            10 * np.random.random(size=10),  # same distance
-            10 * np.random.random(size=10)  # same distance
+            10 * rs.random(size=370),
+            30 * rs.random(size=10),  # long distances
+            10 * rs.random(size=10),  # same distance
+            10 * rs.random(size=10)  # same distance
         )
     )
     return ride_dists
@@ -25,10 +28,10 @@ def simulate_ride_speeds():
     logging.info('Simulating ride speeds ...')
     ride_speeds = np.concatenate(
         (
-            np.random.normal(loc=30, scale=5, size=370),
-            np.random.normal(loc=30, scale=5, size=10), # same speed
-            np.random.normal(loc=50, scale=10, size=10), # high speed
-            np.random.normal(loc=15, scale=4, size=10) #low speed
+            rs.normal(loc=30, scale=5, size=370),
+            rs.normal(loc=30, scale=5, size=10), # same speed
+            rs.normal(loc=50, scale=10, size=10), # high speed
+            rs.normal(loc=15, scale=4, size=10) #low speed
         )
     )
     return ride_speeds
@@ -58,9 +61,10 @@ def simulate_ride_data():
 #==========================================
 # Clustering with DBSCAN
 #==========================================
-from sklearn.preprocessing import StandardScaler
-from sklearn.cluster import DBSCAN
 from sklearn import metrics
+from sklearn.cluster import DBSCAN
+from sklearn.preprocessing import StandardScaler
+
 
 def plot_cluster_results(data, labels, core_samples_mask, n_clusters_):
     fig = plt.figure(figsize=(10, 10))
@@ -84,7 +88,7 @@ def plot_cluster_results(data, labels, core_samples_mask, n_clusters_):
     plt.ylabel('Standard Scaled Ride Time')
     plt.title('Estimated number of clusters: %d' % n_clusters_)
     #plt.show()
-    plt.savefig('taxi-rides.png')
+    plt.savefig('Chapter01/clustering/taxi-rides.png')
 
 def cluster_and_label(data, create_and_show_plot=True):
     data = StandardScaler().fit_transform(data)
@@ -99,10 +103,10 @@ def cluster_and_label(data, create_and_show_plot=True):
     n_clusters_ = len(set(labels)) - (1 if -1 in labels else 0)
     n_noise_ = list(labels).count(-1)
 
-    # print('Estimated number of clusters: %d' % n_clusters_)
-    # print('Estimated number of noise points: %d' % n_noise_)
-    # print("Silhouette Coefficient: %0.3f"
-    #       % metrics.silhouette_score(data, labels))
+    print('Estimated number of clusters: %d' % n_clusters_)
+    print('Estimated number of noise points: %d' % n_noise_)
+    print("Silhouette Coefficient: %0.3f"
+          % metrics.silhouette_score(data, labels))
 
     run_metadata = {
         'nClusters': n_clusters_,
@@ -119,7 +123,7 @@ def cluster_and_label(data, create_and_show_plot=True):
 if __name__ == "__main__":
     import os
     # If data present, read it in
-    file_path = 'taxi-rides.csv'
+    file_path = 'Chapter01/clustering/taxi-rides.csv'
     if os.path.exists(file_path):
         df = pd.read_csv(file_path)
     else:
@@ -137,4 +141,4 @@ if __name__ == "__main__":
     
     # Output your results to json
     logging.info('Outputting to json ...')
-    df.to_json('taxi-labels.json', orient='records')
+    df.to_json('Chapter01/clustering/taxi-labels.json', orient='records')

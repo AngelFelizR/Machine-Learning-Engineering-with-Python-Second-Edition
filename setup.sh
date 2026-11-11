@@ -56,6 +56,18 @@ if [ "$(docker inspect -f '{{.State.Running}}' "$CONTAINER" 2>/dev/null)" = "tru
     docker cp ~/.ssh/id_ed25519.pub "$CONTAINER:/home/dev/.ssh/authorized_keys"
     docker exec -u 0 "$CONTAINER" chown 1000:1000 /home/dev/.ssh/authorized_keys
     docker exec -u 0 "$CONTAINER" chmod 600 /home/dev/.ssh/authorized_keys
+
+    # Kaggle API credentials (optional): if a kaggle.json is present in the
+    # repo root, install it inside the container so `import kaggle` can
+    # authenticate without further setup.
+    if [ -f kaggle.json ]; then
+        docker exec -u 0 "$CONTAINER" mkdir -p /home/dev/.kaggle
+        docker cp kaggle.json "$CONTAINER:/home/dev/.kaggle/kaggle.json"
+        docker exec -u 0 "$CONTAINER" chown 1000:1000 /home/dev/.kaggle/kaggle.json
+        docker exec -u 0 "$CONTAINER" chmod 600 /home/dev/.kaggle/kaggle.json
+        echo "Kaggle credentials installed."
+    fi
+
     echo "Ready! Connect with: ssh mlewp"
 else
     echo "ERROR: The container $CONTAINER stopped unexpectedly."

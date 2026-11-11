@@ -1,16 +1,34 @@
 import logging
-import pandas as pd
-import numpy as np
+import warnings
+
 import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+from matplotlib.ticker import FuncFormatter
+from tqdm.std import TqdmWarning
+
+warnings.filterwarnings("ignore", category=TqdmWarning)
+logging.getLogger("prophet.plot").setLevel(logging.CRITICAL)
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(message)s",
+    handlers=[
+        logging.StreamHandler(),
+        logging.FileHandler("Chapter01/forecasting/forecasting_example.log", mode="w"),
+    ],
+)
+
 plt.rcParams.update({'font.size': 22})
 
-from prophet import Prophet
 import kaggle
+from prophet import Prophet
+
 
 def download_kaggle_dataset(kaggle_dataset: str ="pratyushakar/rossmann-store-sales") -> None:
     api = kaggle.api
     print(api.get_config_value('username'))
-    kaggle.api.dataset_download_files(kaggle_dataset, path="./", unzip=True, quiet=False)
+    kaggle.api.dataset_download_files(kaggle_dataset, path="Chapter01/forecasting/rossman_store_data", unzip=True, quiet=False)
     
 def prep_store_data(df: pd.DataFrame, store_id: int = 4, store_open: int = 1) -> pd.DataFrame:
     df['Date'] = pd.to_datetime(df['Date'])
@@ -28,8 +46,7 @@ def plot_store_data(df: pd.DataFrame) -> None:
     ax.set_xlabel('Date')
     ax.set_ylabel('Sales')
     ax.legend(['Truth'])
-    current_ytick_values = plt.gca().get_yticks()
-    plt.gca().set_yticklabels(['{:,.0f}'.format(x) for x in current_ytick_values])
+    ax.yaxis.set_major_formatter(FuncFormatter(lambda x, _: f'{x:,.0f}'))
     plt.savefig('store_data.png')
     
 
@@ -112,9 +129,9 @@ def plot_forecast(df_train: pd.DataFrame, df_test: pd.DataFrame, predicted: pd.D
         # print(f"First few values of predicted['yhat_upper']: {predicted['yhat_upper'].head()}")
         # print(f"First few values of predicted['yhat_lower']: {predicted['yhat_lower'].head()}")
         ax.fill_between(
-            x=predicted['ds'], 
-            y1=predicted['yhat_upper'], 
-            y2=predicted['yhat_lower'], 
+            x=predicted['ds'].values, 
+            y1=predicted['yhat_upper'].values, 
+            y2=predicted['yhat_lower'].values, 
             alpha=0.15, 
             color='red',
         )
@@ -130,12 +147,11 @@ def plot_forecast(df_train: pd.DataFrame, df_test: pd.DataFrame, predicted: pd.D
         alpha=0.5, 
         marker='o'
     )
-    current_ytick_values = plt.gca().get_yticks()
-    plt.gca().set_yticklabels(['{:,.0f}'.format(x) for x in current_ytick_values])
+    ax.yaxis.set_major_formatter(FuncFormatter(lambda x, _: f'{x:,.0f}'))
     ax.set_xlabel('Date')
     ax.set_ylabel('Sales')
     plt.tight_layout()
-    plt.savefig('store_data_forecast.png')
+    plt.savefig('Chapter01/forecasting/store_data_forecast.png')
 
 
 
@@ -144,15 +160,15 @@ if __name__ == "__main__":
     import os
     
     # If data present, read it in, otherwise, download it 
-    file_path = './train.csv'
+    file_path = 'Chapter01/forecasting/rossman_store_data/train.csv'
     if os.path.exists(file_path):
         logging.info('Dataset found, reading into pandas dataframe.')
-        df = pd.read_csv(file_path)
+        df = pd.read_csv(file_path, low_memory=False)
     else:
         logging.info('Dataset not found, downloading ...')
         download_kaggle_dataset()
         logging.info('Reading dataset into pandas dataframe.')
-        df = pd.read_csv(file_path)   
+        df = pd.read_csv(file_path, low_memory=False)   
     
     # Transform dataset in preparation for feeding to Prophet
     df = prep_store_data(df)

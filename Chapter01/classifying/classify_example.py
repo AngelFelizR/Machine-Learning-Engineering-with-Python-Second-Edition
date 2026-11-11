@@ -1,26 +1,27 @@
-import pandas as pd
 import numpy as np
+import pandas as pd
 import sklearn
-from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import OneHotEncoder
-# Random Forest Classification
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.model_selection import RandomizedSearchCV
+
 # Imbalanced classes
 from imblearn.over_sampling import SMOTE
+
+# Random Forest Classification
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import RandomizedSearchCV, train_test_split
+from sklearn.preprocessing import OneHotEncoder
 
 
 def ingest_and_prep_data(
         bank_dataset: str = 'bank_data/bank.csv'
     ) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame]:
-    df = pd.read_csv('bank_data/bank.csv', delimiter=';', decimal=',')
+    df = pd.read_csv(bank_dataset, delimiter=';', decimal=',')
     
     # Assume there was some EDA and feature analysis to select below
     feature_cols = ['job', 'marital', 'education', 'contact', 'housing', 'loan', 'default', 'day']
 
     # Features and target
     X = df[feature_cols].copy()
-    y = df['y'].apply(lambda x: 1 if x == 'yes' else 0).copy()
+    y = df['y'].eq('yes').astype(int)
 
     # Train/test
     X_train, X_test, y_train, y_test = train_test_split(X, y, 
@@ -82,7 +83,7 @@ def get_randomised_rf_cv(random_grid: dict) -> sklearn.model_selection._search.R
     
     
 if __name__ == "__main__":
-    X_train, X_test, y_train, y_test = ingest_and_prep_data()
+    X_train, X_test, y_train, y_test = ingest_and_prep_data("Chapter01/classifying/bank_data/bank.csv")
     
     X_balanced, y_balanced = rebalance_classes(X_train, y_train)
     
@@ -91,3 +92,20 @@ if __name__ == "__main__":
         )
     
     rf_random.fit(X_balanced, y_balanced)
+
+    print("\nBest f1 score:", rf_random.best_score_)
+    print("", rf_random.best_params_)
+
+
+""" 
+rf_random.best_params_
+{'n_estimators': 1400,
+ 'min_samples_split': 2,
+ 'min_samples_leaf': 1,
+ 'max_features': 'log2',
+ 'max_depth': 40,
+ 'bootstrap': False}
+
+rf_random.best_score_
+0.9028083614101331
+ """

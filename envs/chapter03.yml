@@ -1,0 +1,24 @@
+# NOTE: the book's original `requirements.txt` (macOS export) pinned
+# scikit-learn==0.24.2 together with auto-sklearn==0.15.0 / smac==1.2. Those
+# conflict with the newer "hotfix" yml (scikit-learn 1.6.1), so the AutoML
+# section (auto-sklearn/smac) is intentionally omitted here. Add a separate
+# env with scikit-learn<1.3 if you need the Chapter03/automl examples.
+name: mlewp-chapter03
+channels:
+  - conda-forge
+dependencies:
+  - python=3.10
+  - pip
+  - numpy=1.26.4
+  - pandas=2.2.2
+  - scikit-learn=1.6.1
+  - scipy=1.15.1
+  - matplotlib=3.10.0
+  - mlflow=2.20.1
+  - pyspark=3.5.4
+  - pyarrow=18.1.0
+  - optuna=4.2.0
+  - pip:
+      - hyperopt==0.2.7
+      - evidently==0.3.1
+      - alibi-detect==0.11.2

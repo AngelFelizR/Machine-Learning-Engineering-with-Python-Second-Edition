@@ -1,0 +1,14 @@
+# Chapter 5 (deployment patterns): Airflow, ZenML, Kubeflow Pipelines SDK.
+# Requires kubectl + kind and the Docker socket for the k8s/docker examples
+# (not part of the base image; add them per the dev-conda-env README).
+name: mlewp-chapter05
+channels:
+  - conda-forge
+dependencies:
+  - python=3.10
+  - pip
+  - pip:
+      - apache-airflow==2.7.0
+      - zenml==0.40.0
+      - kfp==1.8.0
+      - docker==6.1.3

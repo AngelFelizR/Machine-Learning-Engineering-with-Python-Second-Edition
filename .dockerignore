@@ -1,0 +1,13 @@
+# dev-conda-env build context exclusions. `envs/` must NOT be excluded: the
+# Dockerfile COPYs the chosen environment file from it.
+.git
+.github
+**/__pycache__
+**/*.pyc
+**/*.ipynb
+**/.DS_Store
+Chapter08/mlflow.db
+Chapter08/*.pdf
+.dockerignore
+Dockerfile
+docker-compose.yml

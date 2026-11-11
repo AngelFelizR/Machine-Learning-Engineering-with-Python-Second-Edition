@@ -1,0 +1,17 @@
+name: mlewp-chapter07
+channels:
+  - conda-forge
+dependencies:
+  - python=3.10
+  - pip
+  - numpy=1.25.2
+  - pandas=2.0.3
+  - jupyter
+  - pip:
+      - torch==2.0.1
+      - transformers==4.32.0
+      - datasets==2.14.4
+      - huggingface-hub==0.16.4
+      - langchain==0.0.274
+      - langsmith==0.0.26
+      - openai==0.27.9
